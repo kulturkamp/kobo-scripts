@@ -15,7 +15,7 @@ url = f"{URL}/assets/{XFORM}/files/"
 response = requests.get(url, headers=headers, params={'format': 'json'})
 media_json = response.json()
 
-MEDIA_NAME = 'adminslan.csv'
+MEDIA_NAME = 'foo.csv'
 
 # delete
 #if file is form media, delete it
