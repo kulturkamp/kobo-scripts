@@ -15,33 +15,39 @@ url = f"{URL}/assets/{XFORM}/files/"
 response = requests.get(url, headers=headers, params={'format': 'json'})
 media_json = response.json()
 
-MEDIA_NAME = 'foo.csv'
+#in this example, i handle one file for one form
+#naturally you can iterate over a lsit of form ids and over a list of files, logic is the same
+MEDIA_PATH =  os.getenv('MEDIA_NAME')
+MEDIA_NAME = os.path.basename(MEDIA_PATH)
 
-# delete
-#if file is form media, delete it
-#if not, it will be uploaded(depends on your goal you may want to terminate if media is not present)
+#DELETE
+
+#if file is in the form media, delete it first
+#if not, it will be jsut uploaded(depending on your goal you may want to terminate if media is not present)
 for media in media_json['results']:
     if media['metadata']['filename'] == MEDIA_NAME:
         del_url = media['url']
-        res = requests.delete(del_url, headers=headers)
-        print(res)
+        response = requests.delete(del_url, headers=headers)
+        print('deleted ', response)
         break
 
 
 
-# upload
+#UPLOAD
 
 post_url = f"{URL}/assets/{XFORM}/files.json"
 payload = {'filename': MEDIA_NAME}
 
-bytes_content = open(MEDIA_NAME, 'rb')
+#read updated file
+bytes_content = open(MEDIA_PATH, 'rb')
 files =  {'content': bytes_content}
+#does not work without json.dumps() here for some reason idk
 data = {'description': 'Input and equipment media file', 'metadata': json.dumps({'filename': MEDIA_NAME}), 'file_type': 'form_media'}
 
 response = requests.post(url=post_url, headers=headers, data=data, files=files)
-print(response)
+print('uploaded ', response)
 
-# redeploy
+#REDEPLOY
 
 asset_url = f"{URL}/assets/{XFORM}/"
 redeploy_headers = {
@@ -56,4 +62,4 @@ deployment_data = {
     'active': True
 }
 response = requests.patch(asset_url + 'deployment/', headers=redeploy_headers, data=deployment_data)
-print(response)
+print('redeployed ', response)
