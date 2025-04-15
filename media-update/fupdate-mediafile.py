@@ -16,14 +16,14 @@ response = requests.get(url, headers=headers, params={'format': 'json'})
 media_json = response.json()
 
 #in this example, i handle one file for one form
-#naturally you can iterate over a lsit of form ids and over a list of files, logic is the same
-MEDIA_PATH =  os.getenv('MEDIA_NAME')
+#naturally you can iterate over a list of form ids and over a list of files, logic is the same
+MEDIA_PATH =  os.getenv('MEDIA_PATH')
 MEDIA_NAME = os.path.basename(MEDIA_PATH)
 
 #DELETE
 
 #if file is in the form media, delete it first
-#if not, it will be jsut uploaded(depending on your goal you may want to terminate if media is not present)
+#if not, it will be just uploaded(depending on your goal you may want to terminate if media is not present)
 for media in media_json['results']:
     if media['metadata']['filename'] == MEDIA_NAME:
         del_url = media['url']
@@ -36,8 +36,6 @@ for media in media_json['results']:
 #UPLOAD
 
 post_url = f"{URL}/assets/{XFORM}/files.json"
-payload = {'filename': MEDIA_NAME}
-
 #read updated file
 bytes_content = open(MEDIA_PATH, 'rb')
 files =  {'content': bytes_content}
