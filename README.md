@@ -1,2 +1,2 @@
 # python kobo scripts bulk repo
-### do notexpectextensive comments
+### do notexpect extensive comments
